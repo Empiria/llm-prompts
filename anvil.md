@@ -17,6 +17,7 @@ Forms should **only** handle:
 - Event handling for user interactions
 - Navigation using the routing module
 - Validation feedback (presentation layer only)
+- **Utilize data bindings** for UI components to model attributes or form variables
 
 **Avoid in Forms**:
 - Business rule enforcement
@@ -25,24 +26,34 @@ Forms should **only** handle:
 - Application state management
 
 ```python
-# Good Form Example
+# Good Form Example with Data Binding
 class RegistrationForm(BaseForm):
     def __init__(self, **properties):
         self.init_components(**properties)
-
+        # Bind UI components to form-level variables
+        self.user_email = ""
+        self.status_message = ""
+        self.refresh_data_bindings()
+    
     def register_button_click(self, **event_args):
         try:
             # Pass data to server module
             anvil.server.call('register_user', 
-                self.email_input.text,
-                self.password_input.text
+                self.user_email,
+                self.user_password
             )
-            self.status_lbl.text = "Registration successful!"
+            self.status_message = "Registration successful!"
+            self.refresh_data_bindings()
             # Navigate to another page after successful registration
             self.navigate('/')
         except Exception as e:
-            self.status_lbl.text = f"Error: {str(e)}"
+            self.status_message = f"Error: {str(e)}"
+            self.refresh_data_bindings()
 ```
+
+**Explanation:**
+- **Data Binding:** UI components such as `email_input.text` and `status_lbl.text` are bound to `self.user_email` and `self.status_message`, respectively.
+- **self.refresh_data_bindings():** Called after updating bound variables to ensure the UI reflects the latest state.
 
 ### 2. **Server Modules**  
 Handle:
@@ -64,7 +75,7 @@ def register_user(email, password):
         raise ValueError("User already exists")
     
     # Data handling
-    UserTable.add(email=email, 
+    User.create(email=email, 
                 password_hash=hash_password(password))
 ```
 
@@ -92,9 +103,15 @@ class User(Model):
     def deactivate(self):
         self.update(status="inactive",
                    deactivated_at=datetime.now())
+    
+    @classmethod
+    def create(cls, email: str, password_hash: str) -> "User":
+        if not email or not password_hash:
+            raise ValidationError("Email and password are required.")
+        return cls.add_row(email=email, password_hash=password_hash, status="active")
 ```
 
-Key benefits:
+**Key benefits:**
 - Cleaner, more Pythonic data access
 - Type hints and code completion in your IDE
 - Business logic contained within the relevant data
@@ -119,20 +136,20 @@ def process_order_async(order_id):
 ## Structural Guidelines
 
 1. **Project Organization**  
-```
-/myapp
-  /client_code
-    /forms
-      /components
-      /layouts
-      /pages
-    /services
-      /formatters
-      /model
-      /routes
-  /server_code
-  anvil.yaml
-```
+    ```
+    /myapp
+      /client_code
+        /forms
+          /components
+          /layouts
+          /pages
+        /services
+          /formatters
+          /model
+          /routes
+      /server_code
+      anvil.yaml
+    ```
 
 2. **Routing**
 - Use the routing module for clean URLs and navigation
@@ -168,7 +185,7 @@ class BaseForm(Form):
     def __init__(self, **properties):
         self.router = Router()
         self.init_components(**properties)
-
+    
     def navigate(self, route):
         self.router.navigate(route)
 ```
@@ -213,17 +230,30 @@ def update_click(self, **event_args):
 ✅ **A Better Approach**  
 ```python
 # Form
-def update_click(self, **event_args):
-    try:
-        anvil.server.call('add_user', self.name_input.text)
-    except ValidationError as e:
-        self.error_label.text = str(e)
+class UserForm(BaseForm):
+    def __init__(self, **properties):
+        self.init_components(**properties)
+        self.user_name = ""
+        self.status_message = ""
+        self.refresh_data_bindings()
+    
+    def update_click(self, **event_args):
+        try:
+            anvil.server.call('add_user', self.user_name)
+            self.status_message = "User added successfully."
+            self.refresh_data_bindings()
+            self.navigate('/users')
+        except ValidationError as e:
+            self.status_message = str(e)
+            self.refresh_data_bindings()
+```
 
+```python
 # Server Module
 @anvil.server.callable 
 def add_user(name):
     validate_name(name)  # Raises ValidationError
-    User.create(name)
+    User.create(name=name)
     check_user_capacity()  # Server-side check
 ```
 
@@ -247,12 +277,26 @@ class User(Model):
 
 # Form
 class UserForm(BaseForm):
+    def __init__(self, **properties):
+        self.init_components(**properties)
+        self.user_name = ""
+        self.status_message = ""
+        self.refresh_data_bindings()
+    
     def update_click(self, **event_args):
         try:
-            User.create(self.name_input.text)
-            self.status_lbl.text = "User created successfully"
+            User.create(self.user_name)
+            self.status_message = "User created successfully"
+            self.refresh_data_bindings()
             self.navigate('/users')
         except (ValidationError, BusinessError) as e:
-            self.error_label.text = str(e)
+            self.status_message = str(e)
+            self.refresh_data_bindings()
 ```
+
+**Explanation:**
+- **Data Binding:** The form binds `self.user_name` and `self.status_message` to UI components, reducing direct manipulation.
+- **self.refresh_data_bindings():** Ensures that any changes to bound variables are reflected in the UI.
+- **Model Class Logic:** Business logic is encapsulated within the `User` model, keeping the form clean and focused on UI interactions.
+
 ```
