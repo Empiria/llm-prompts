@@ -27,6 +27,8 @@ Forms should **only** handle:
 
 ```python
 # Good Form Example with Data Binding
+from anvil.routing import navigate
+
 class RegistrationForm(BaseForm):
     def __init__(self, **properties):
         self.init_components(**properties)
@@ -45,7 +47,7 @@ class RegistrationForm(BaseForm):
             self.status_message = "Registration successful!"
             self.refresh_data_bindings()
             # Navigate to another page after successful registration
-            self.navigate('/')
+            navigate('/')
         except Exception as e:
             self.status_message = f"Error: {str(e)}"
             self.refresh_data_bindings()
@@ -54,6 +56,7 @@ class RegistrationForm(BaseForm):
 **Explanation:**
 - **Data Binding:** UI components such as `email_input.text` and `status_lbl.text` are bound to `self.user_email` and `self.status_message`, respectively.
 - **self.refresh_data_bindings():** Called after updating bound variables to ensure the UI reflects the latest state.
+- **Navigation:** Use the `navigate` function from the routing module to change pages.
 
 ### 2. **Server Modules**  
 Handle:
@@ -185,16 +188,15 @@ class BaseForm(Form):
     def __init__(self, **properties):
         self.router = Router()
         self.init_components(**properties)
-    
-    def navigate(self, route):
-        self.router.navigate(route)
 ```
 
 ```python
 # Usage in a form
+from anvil.routing import navigate
+
 class ProductForm(BaseForm):
     def view_product_click(self, **event_args):
-        self.navigate(f'/products/{self.product.id}')
+        navigate(f'/products/{self.product.id}')
 ```
 
 3. **State Management**  
@@ -229,6 +231,8 @@ def update_click(self, **event_args):
 
 ✅ **A Better Approach**  
 ```python
+from anvil.routing import navigate
+
 # Form
 class UserForm(BaseForm):
     def __init__(self, **properties):
@@ -242,7 +246,7 @@ class UserForm(BaseForm):
             anvil.server.call('add_user', self.user_name)
             self.status_message = "User added successfully."
             self.refresh_data_bindings()
-            self.navigate('/users')
+            navigate('/users')
         except ValidationError as e:
             self.status_message = str(e)
             self.refresh_data_bindings()
@@ -259,6 +263,8 @@ def add_user(name):
 
 ✅ **Best Practice: Model Class**
 ```python
+from anvil.routing import navigate
+
 # Model class with business logic
 @anvil.server.portable_class
 class User(Model):
@@ -288,7 +294,7 @@ class UserForm(BaseForm):
             User.create(self.user_name)
             self.status_message = "User created successfully"
             self.refresh_data_bindings()
-            self.navigate('/users')
+            navigate('/users')
         except (ValidationError, BusinessError) as e:
             self.status_message = str(e)
             self.refresh_data_bindings()
@@ -297,6 +303,7 @@ class UserForm(BaseForm):
 **Explanation:**
 - **Data Binding:** The form binds `self.user_name` and `self.status_message` to UI components, reducing direct manipulation.
 - **self.refresh_data_bindings():** Ensures that any changes to bound variables are reflected in the UI.
+- **Navigation:** Use the `navigate` function for page transitions.
 - **Model Class Logic:** Business logic is encapsulated within the `User` model, keeping the form clean and focused on UI interactions.
 
 ```
