@@ -1,4 +1,3 @@
-```markdown
 # Anvil Framework Application Structure Guide
 
 ## Objective  
@@ -305,5 +304,3 @@ class UserForm(BaseForm):
 - **self.refresh_data_bindings():** Ensures that any changes to bound variables are reflected in the UI.
 - **Navigation:** Use the `navigate` function for page transitions.
 - **Model Class Logic:** Business logic is encapsulated within the `User` model, keeping the form clean and focused on UI interactions.
-
-```

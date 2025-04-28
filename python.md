@@ -1,4 +1,3 @@
-```markdown
 # Pythonic Code Generation Guidelines
 
 ## Objective
