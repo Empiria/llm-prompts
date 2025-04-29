@@ -1,3 +1,9 @@
+<!--
+SPDX-License-Identifier: MIT
+Copyright (c) Empiria Ltd
+This file is part of the LLM Prompts project, published at https://github.com/empiria/llm-prompts
+-->
+
 # Pythonic Code Generation Guidelines
 
 ## Objective
