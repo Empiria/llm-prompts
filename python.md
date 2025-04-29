@@ -91,6 +91,95 @@ Code that uses Python's unique features and design philosophy effectively, as ou
 
 ---
 
+#### 8. **Lambda Expression Preferences**
+Use lambda judiciously with these guidelines:
+- **Avoid naming lambdas**: Use `def` for named functions
+- **Prefer operator module**: Use `operator.itemgetter`, `attrgetter`, `methodcaller` instead of trivial lambdas
+- **Use comprehensions**: Better than `map`/`filter` with lambda 
+- **Keep trivial**: Only for simple one-line operations
+- **Avoid complex logic**: Use named functions for anything non-trivial
+
+**When to use**:
+- Simple key functions in sorted/max/min
+- Trivial one-off predicates for filter()
+- Short-lived callback handlers
+
+**When to avoid**:
+```python
+# Non-Pythonic: named lambda
+sort_key = lambda x: x[1]  # Use operator.itemgetter(1) instead
+
+# Non-Pythonic: redundant lambda 
+sorted(nums, key=lambda n: abs(n))  # Use key=abs
+
+# Non-Pythonic: complex logic
+sorted(pairs, key=lambda p: (p[0]//100, p[1].lower()))
+```
+
+**Pythonic alternatives**:
+```python
+from operator import itemgetter, attrgetter, methodcaller
+
+# Use built-in functions
+sorted(nums, key=abs)
+
+# Use operator module 
+sorted(pairs, key=itemgetter(1))
+sorted(objs, key=attrgetter('name'))
+sorted(strs, key=methodcaller('casefold'))
+
+# Use comprehensions 
+squares = (x**2 for x in numbers)  # Instead of map+lambda
+odds = (x for x in nums if x % 2)  # Instead of filter+lambda
+```
+
+---
+
+#### 9. **Composition Over Inheritance**
+Prefer object composition over class inheritance to promote code reuse and flexible designs. Follow these guidelines:
+
+- **Favor "has a" relationships**: Use composition when one class contains another (e.g. `Car` has an `Engine`)
+- **Avoid deep hierarchies**: Limit inheritance chains to 1-2 levels; use composition for additional features
+- **Encapsulate behavior**: Create small, focused classes that can be combined
+- **Use interfaces**: Define clear protocols for interaction between components
+
+**When to use composition**:
+- Modeling parts/features of an object
+- Runtime behavior changes needed
+- Sharing functionality between unrelated classes
+- Avoiding tight coupling of inheritance
+
+**Non-Pythonic (inheritance)**:
+```python
+# Fragile base class problem
+class Manager(Employee, ProductivityRole, PayrollPolicy):
+    # Multiple inheritance complexity
+    pass
+```
+
+**Pythonic (composition)**:
+```python
+class Manager:
+    def __init__(self):
+        self.role = ProductivityRole()
+        self.payroll = PayrollPolicy()
+        self.contact = ContactInfo()
+
+    def perform_work(self, hours):
+        return self.role.perform_duties(hours)
+
+    def calculate_pay(self):
+        return self.payroll.calculate()
+```
+
+**Key benefits**:
+- Easier maintenance and testing
+- More flexible class design
+- Reduced dependency between components
+- Clearer separation of concerns
+
+---
+
 ## Checklist for Generated Code
 Ensure all code:
 - Passes the Ruff linter and formatter.
