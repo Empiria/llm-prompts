@@ -142,6 +142,9 @@ Prefer object composition over class inheritance to promote code reuse and flexi
 - **Avoid deep hierarchies**: Limit inheritance chains to 1-2 levels; use composition for additional features
 - **Encapsulate behavior**: Create small, focused classes that can be combined
 - **Use interfaces**: Define clear protocols for interaction between components
+- **Favour 'has a' relationships**: Use composition when one class contains another (e.g. `Car` has an `Engine`)
+- **Avoid deep hierarchies**: Limit inheritance chains to 1-2 levels; use composition for additional features
+- **Encapsulate behaviour**: Create small, focused classes that can be combined
 
 **When to use composition**:
 - Modeling parts/features of an object
@@ -177,6 +180,7 @@ class Manager:
 - More flexible class design
 - Reduced dependency between components
 - Clearer separation of concerns
+- Standardised spelling for British English readers
 
 ---
 

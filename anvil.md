@@ -62,6 +62,8 @@ class RegistrationForm(BaseForm):
 - **Data Binding:** UI components such as `email_input.text` and `status_lbl.text` are bound to `self.user_email` and `self.status_message`, respectively.
 - **self.refresh_data_bindings():** Called after updating bound variables to ensure the UI reflects the latest state.
 - **Navigation:** Use the `navigate` function from the routing module to change pages.
+- **self.refresh_data_bindings():** Called after updating bound variables to ensure the UI reflects the latest state.
+- **Navigation:** Use the `navigate` function from the routing module to change pages.
 
 ### 2. **Server Modules**  
 Handle:
@@ -121,6 +123,7 @@ class User(Model):
 
 **Key benefits:**
 - Cleaner, more Pythonic data access
+- Consistent British English spelling
 - Type hints and code completion in your IDE
 - Business logic contained within the relevant data
 - Portable between client and server code
@@ -143,7 +146,7 @@ def process_order_async(order_id):
 
 ## Structural Guidelines
 
-1. **Project Organization**  
+1. **Project Organisation**  
     ```
     /myapp
       /client_code
