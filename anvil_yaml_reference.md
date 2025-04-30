@@ -68,6 +68,33 @@ is_package: true  # Mark as reusable component
 
 ### 2. Common Component Types and Properties
 
+#### DataRowPanel
+```yaml
+type: DataRowPanel
+properties:
+  background: "theme:Gray 200"
+  spacing_above: none
+  auto_display_data: true
+```
+
+#### RepeatingPanel
+```yaml 
+type: RepeatingPanel
+properties:
+  item_template: content.package.ItemTemplate
+  items: []
+  spacing_above: none
+```
+
+#### FlowPanel
+```yaml
+type: FlowPanel
+properties:
+  align: right
+  spacing: medium
+  vertical_align: middle
+```
+
 #### Button
 ```yaml
 type: Button
@@ -86,6 +113,18 @@ properties:
   placeholder: "Enter text"
   type: "text"  # text|number|email|tel|url
   hide_text: false
+  auto_expand: true  # For multi-line text boxes
+  height: 300  # Fixed height in pixels
+  enabled: false  # Disable editing
+```
+
+#### TextArea
+```yaml
+type: TextArea 
+properties:
+  placeholder: "Long-form text"
+  auto_expand: false  # Default, set true for auto-growing
+  height: 150  # Initial height
 ```
 
 #### DataGrid
@@ -110,10 +149,16 @@ properties:
 
 ### 3. Event Handling
 ```yaml
-events:
+event_bindings:
   click: button_click_handler
   change: textbox_changed
   show: form_shown
+  hover: element_hover  # Mouse enter/leave events
+  pressed_enter: text_entered
+  # File-specific events:
+  file: file_loader_change  
+  # Component-specific events:
+  cell_click: tabulator_cell_click
 ```
 
 ### 4. Containers and Layout
@@ -190,7 +235,16 @@ components:
 
 ### 6. Custom Components
 ```yaml
-- type: form:dep_abc123xyz456:components.CustomFormComponent
+- type: form:CLIENT_ID:Switch  # From custom components package
+  properties:
+    text_post: 'Is Admin?'
+- type: form:DEPENDENCY_ID:Tabulator  # Custom tabulator component
+  event_bindings:
+    row_click: tabulator_row_clicked
+- type: form:components.Pivot  # From shared components package
+  properties:
+    rows: [provenance_id]
+    cols: [source_id] 
   id: custom_component
   properties: {}
   event_bindings:
