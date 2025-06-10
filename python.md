@@ -184,6 +184,80 @@ class Manager:
 
 ---
 
+#### 10. **Declarative Over Imperative**
+Prefer declarative patterns that describe *what* over *how*, using these techniques:
+
+**a. Dictionary Dispatch**  
+Replace conditional logic with dictionary lookups:
+```python
+# Non-Pythonic
+def handle_operation(op, a, b):
+    if op == 'add':
+        return a + b
+    elif op == 'sub':
+        return a - b
+    elif op == 'mul':
+        return a * b
+    else:
+        raise ValueError
+
+# Pythonic
+def handle_operation(op, a, b):
+    operations = {
+        'add': lambda x,y: x+y,
+        'sub': lambda x,y: x-y,
+        'mul': lambda x,y: x*y
+    }
+    return operations[op](a, b)
+```
+
+**b. Comprehension Filtering**  
+Use built-in filtering instead of conditional loops:
+```python
+# Non-Pythonic
+results = []
+for x in data:
+    if x % 2 == 0 and x > 10:
+        results.append(x*2)
+
+# Pythonic
+results = [x*2 for x in data if x % 2 == 0 and x > 10]
+```
+
+**c. Ternary Expressions**  
+For simple value assignments:
+```python
+# Non-Pythonic
+if score > 50:
+    status = 'pass'
+else:
+    status = 'fail'
+
+# Pythonic
+status = 'pass' if score > 50 else 'fail'
+```
+
+**d. Structural Pattern Matching (Python 3.10+)**  
+For complex conditional structures:
+```python
+match response:
+    case {'status': 200, 'data': [*items]}:
+        process(items)
+    case {'status': 404}:
+        handle_not_found()
+    case {'status': 418}:
+        raise TeapotError()
+    case _:
+        handle_unknown()
+```
+
+**When to use if/else**:
+- When dealing with mutually exclusive conditions
+- When logic requires complex side effects
+- When pattern matching improves readability over nested conditionals
+
+---
+
 ## Checklist for Generated Code
 Ensure all code:
 - Passes the Ruff linter and formatter.
