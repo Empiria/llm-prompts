@@ -203,10 +203,11 @@ def handle_operation(op, a, b):
 
 # Pythonic
 def handle_operation(op, a, b):
+    from operator import add, sub, mul
     operations = {
-        'add': lambda x,y: x+y,
-        'sub': lambda x,y: x-y,
-        'mul': lambda x,y: x*y
+        'add': add,
+        'sub': sub, 
+        'mul': mul
     }
     return operations[op](a, b)
 ```
