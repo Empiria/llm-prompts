@@ -1,6 +1,16 @@
-# CLAUDE.md
+# AGENT.md
 
-This file provides guidance to Claude Code (claude.ai/code).
+This file provides guidance to AI coding agents.
+
+## Shell Environment
+
+**IMPORTANT**: The user's shell is **xonsh**. Always use xonsh syntax for shell commands:
+
+- Environment variables: `$VAR = "value"` (not `export VAR=value`)
+- Command execution: `$(command)` for command substitution
+- Background processes: `command &` works the same
+- Pipes and redirection work as in bash
+- Never use bash-style `VAR=value command` syntax
 
 ## Python Coding Standards
 
