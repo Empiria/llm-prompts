@@ -186,7 +186,10 @@ jj squash -r <revision>
 
 ### Common Issues
 
-**Split command hanging**: The split command opens an interactive diff editor. If it appears to hang, check if an editor window opened or try setting `--tool` to specify your preferred diff editor.
+**Interactive commands hanging**: Commands like `jj split` (without file arguments) and `jj diffedit` open interactive editors and will hang in automated contexts. Always use non-interactive alternatives:
+- Use `jj split file1.txt file2.txt` instead of `jj split`
+- Use `jj squash --from @- --into @ file1.txt` to move specific files
+- Use `jj describe -m "message"` instead of `jj describe`
 
 **Split command limitations**: `jj split` with file arguments may create empty changes if files don't exist in the current revision. Use `jj squash` to move files between changes instead.
 
