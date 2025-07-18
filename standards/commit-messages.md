@@ -37,6 +37,20 @@ All commit messages must follow this format:
 - Maximum 100 characters per line in body
 - Reference issues: `Fixes #123`, `Closes #456`, `Resolves #789`
 
+## Description Writing Guidelines
+
+**DO - Be specific about what actually changed:**
+- ✅ `add verification steps to Sequential Commit Method`
+- ✅ `fix incorrect --from/@- --into/@+ direction in Pattern 2`
+- ✅ `remove xonsh-specific guidance from AGENT.md`
+
+**DON'T - Use generic/template language:**
+- ❌ `improve jj workflow patterns and troubleshooting`
+- ❌ `enhance documentation`
+- ❌ `update files with changes`
+
+**Each commit must describe specific changes, not general improvements.**
+
 ## Critical Requirements
 
 - **NEVER include AI references** in commit messages
