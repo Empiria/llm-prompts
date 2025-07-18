@@ -1,6 +1,6 @@
 # Prepare JJ Changes
 
-Analyze the current jj repository state and prepare properly formatted atomic changes following the Conventional Commits 1.0.0 specification with emojis. This command organizes work-in-progress into focused, atomic changes using jj's edit workflow - it does NOT execute any commands.
+Analyze the current jj repository state and prepare properly formatted atomic changes following the Conventional Commits 1.0.0 specification with emojis. This command organizes work-in-progress into focused, atomic changes using jj's edit workflow. After showing the planned commands, the agent will offer to execute them with user confirmation.
 
 ## Usage
 
@@ -12,6 +12,8 @@ Analyze the current jj repository state and prepare properly formatted atomic ch
 2. **Plan Atomic Changes**: Identify logical groupings of changes that should be separate commits
 3. **Draft Change Messages**: Create properly formatted change descriptions following your standards
 4. **Show Commands**: Display the exact jj commands to run (without executing them)
+5. **Offer to Execute**: Ask user if they want to proceed with the planned changes
+6. **Execute Changes**: If user confirms, run the command sequence to create atomic changes
 
 ## Implementation
 
@@ -22,6 +24,8 @@ Analyze the current jj repository state and prepare properly formatted atomic ch
 5. Plan sequence of `jj new`, `jj describe`, and `jj edit` commands
 6. Draft change messages following the commit message standards
 7. Show the complete sequence of jj commands to run (without executing them)
+8. Ask user for confirmation to proceed with the planned changes
+9. If confirmed, execute the command sequence to create the atomic changes
 
 ## JJ Edit Workflow Commands
 
@@ -39,10 +43,14 @@ Show the user:
 2. **Atomic Changes Analysis** (how work should be split)
 3. **Prepared JJ Commands** (exact command sequence to run)
 4. **Change Message Validation** (confirmation all follow standards)
+5. **Execution Confirmation** (ask if user wants to proceed)
+6. **Execution Results** (if confirmed, run commands and show results)
 
 ## Critical Requirements
 
-- Only show commands - do NOT execute them
+- Show planned commands first, then ask for confirmation before executing
 - Follow commit message standards from [../standards/commit-messages.md](../standards/commit-messages.md)
 - Ensure each change is atomic and focused on a single concern
 - Use jj's edit workflow for organizing multiple related changes
+- Only execute commands after explicit user confirmation
+- Provide clear feedback on execution results
