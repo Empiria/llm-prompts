@@ -62,18 +62,25 @@ When you have a working copy with mixed changes that need to be organized into a
 ### The Sequential Commit Method (Most Reliable)
 
 1. **Start from a clean working copy with all your changes**
-2. **Create first atomic commit:**
+2. **Verify initial state:**
+   ```bash
+   jj st                    # See all changes
+   jj diff --name-only      # List changed files
+   ```
+3. **Create first atomic commit:**
    ```bash
    jj new -m "first atomic change description"
    jj squash --from @- --into @ file1.txt file2.txt
+   jj st                    # VERIFY: should show remaining files
    ```
-3. **Create second atomic commit:**
+4. **Create second atomic commit:**
    ```bash
    jj new -m "second atomic change description"  
    jj squash --from @-- --into @ file3.txt file4.txt
+   jj st                    # VERIFY: should show remaining files
    ```
-4. **Continue until all changes are organized**
-5. **Clean up the original change:**
+5. **Continue until all changes are organized**
+6. **Clean up the original change:**
    ```bash
    jj abandon @---  # Abandon the now-empty original change
    ```
@@ -82,7 +89,20 @@ When you have a working copy with mixed changes that need to be organized into a
 - Creates new empty changes first
 - Pulls specific files FROM the original change INTO each new change
 - Leaves remaining files in the original change for the next iteration
+- **Includes verification steps** to catch issues early
 - Avoids the complexity of splitting and parallel changes
+
+### If Sequential Method Fails
+
+**Fallback: The Copy Method**
+```bash
+# If squash operations aren't working, use direct file operations:
+jj new -m "first atomic change"
+# Manually edit files to only include first change
+jj new -m "second atomic change"
+# Manually edit files to only include second change
+# Then clean up the original change
+```
 
 ## Common Patterns
 
@@ -170,7 +190,11 @@ jj squash -r <revision>
 
 **Split command limitations**: `jj split` with file arguments may create empty changes if files don't exist in the current revision. Use `jj squash` to move files between changes instead.
 
-**Empty changes**: Use `jj abandon` to remove empty changes, or `jj squash -r <empty-change>` to fold them into their parent.
+**Sequential Method failures**: If `jj squash --from @- --into @` does nothing, the files may not exist in the parent commit. Use `jj show @- --name-only` to verify what files are in the parent before attempting to move them.
+
+**Empty changes**: Use `jj abandon` to remove empty changes, or `jj squash -r <empty-change>` to fold them into their parent. Always verify with `jj st` after operations.
+
+**Lost changes**: If changes seem to disappear, use `jj log -r 'mine()' --limit 10` to see recent commits and `jj show <commit> --name-only` to find where files ended up.
 
 **Complex rebases**: When jj rebases changes automatically, conflicts may occur. Use `jj log` to see the current state and `jj resolve` to handle conflicts.
 
