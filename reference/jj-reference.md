@@ -55,6 +55,35 @@ The edit workflow is ideal for organizing multiple related changes using jj's ed
 
 When you create changes before existing ones, jj automatically rebases dependent changes. This always succeeds and maintains the change IDs while updating commit hashes.
 
+## Recommended Workflow for Mixed Changes
+
+When you have a working copy with mixed changes that need to be organized into atomic commits:
+
+### The Sequential Commit Method (Most Reliable)
+
+1. **Start from a clean working copy with all your changes**
+2. **Create first atomic commit:**
+   ```bash
+   jj new -m "first atomic change description"
+   jj squash --from @- --into @ file1.txt file2.txt
+   ```
+3. **Create second atomic commit:**
+   ```bash
+   jj new -m "second atomic change description"  
+   jj squash --from @-- --into @ file3.txt file4.txt
+   ```
+4. **Continue until all changes are organized**
+5. **Clean up the original change:**
+   ```bash
+   jj abandon @---  # Abandon the now-empty original change
+   ```
+
+### Why This Works
+- Creates new empty changes first
+- Pulls specific files FROM the original change INTO each new change
+- Leaves remaining files in the original change for the next iteration
+- Avoids the complexity of splitting and parallel changes
+
 ## Common Patterns
 
 ### Organizing Mixed Changes into Atomic Commits
@@ -68,13 +97,13 @@ jj split
 jj split file1.txt file2.txt
 ```
 
-**Pattern 2: Using squash to move changes**
+**Pattern 2: Using squash to move changes (CORRECTED)**
 ```bash
 # Create new change for subset of files
 jj new -m "first atomic change"
 
-# Move specific files to new change
-jj squash --from @ --into @- file1.txt file2.txt
+# Move specific files FROM parent INTO current change
+jj squash --from @- --into @ file1.txt file2.txt
 
 # Continue organizing remaining files
 jj new -m "second atomic change"
@@ -138,6 +167,8 @@ jj squash -r <revision>
 ### Common Issues
 
 **Split command hanging**: The split command opens an interactive diff editor. If it appears to hang, check if an editor window opened or try setting `--tool` to specify your preferred diff editor.
+
+**Split command limitations**: `jj split` with file arguments may create empty changes if files don't exist in the current revision. Use `jj squash` to move files between changes instead.
 
 **Empty changes**: Use `jj abandon` to remove empty changes, or `jj squash -r <empty-change>` to fold them into their parent.
 
