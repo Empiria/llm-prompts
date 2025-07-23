@@ -84,6 +84,11 @@ rad issue comment <issue-id>
 
 # Close issue
 rad issue close <issue-id>
+
+# Use --no-announce flag to avoid waiting for network sync messages
+# This applies to all rad issue commands (open, comment, close, etc.)
+rad issue comment <issue-id> --no-announce -m "Comment text"
+rad issue close <issue-id> --no-announce
 ```
 
 #### Issue Creation Tips
