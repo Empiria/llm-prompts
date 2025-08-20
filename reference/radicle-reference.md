@@ -81,14 +81,33 @@ rad issue show <issue-id>
 
 # Comment on issue
 rad issue comment <issue-id>
+rad issue comment <issue-id> --message "Comment text"
+rad issue comment <issue-id> --reply-to <comment-id>
 
-# Close issue
-rad issue close <issue-id>
+# Change issue state
+rad issue state <issue-id> --closed    # Close issue
+rad issue state <issue-id> --open      # Reopen issue  
+rad issue state <issue-id> --solved    # Mark as solved
+
+# Edit issue
+rad issue edit <issue-id> --title "New Title" --description "New description"
+
+# Assign/unassign users
+rad issue assign <issue-id> --add <did>
+rad issue assign <issue-id> --delete <did>
+
+# Add/remove labels
+rad issue label <issue-id> --add <label>
+rad issue label <issue-id> --delete <label>
+
+# React to issues/comments
+rad issue react <issue-id> --emoji "👍"
+rad issue react <issue-id> --to <comment-id> --emoji "❤️"
 
 # Use --no-announce flag to avoid waiting for network sync messages
-# This applies to all rad issue commands (open, comment, close, etc.)
+# This applies to all rad issue commands (open, comment, state, etc.)
 rad issue comment <issue-id> --no-announce -m "Comment text"
-rad issue close <issue-id> --no-announce
+rad issue state <issue-id> --closed --no-announce
 ```
 
 #### Issue Creation Tips
@@ -172,7 +191,8 @@ Radicle supports multiple Tor configurations for enhanced privacy:
 1. **Create Detailed Issues**: Use `--title` and `--description` flags for structured issues
 2. **Reference Issues**: Link patches to issues using issue IDs in commit messages
 3. **Track Progress**: Update issues as work progresses
-4. **Close Completed Issues**: Use `rad issue close <issue-id>` when work is finished
+4. **Close Completed Issues**: Use `rad issue state <issue-id> --closed` when work is finished
+5. **Manage Issue Lifecycle**: Use `--open`, `--closed`, or `--solved` states as appropriate
 
 ### Issue Creation Best Practices
 1. **Start Simple**: Begin with concise descriptions, expand in comments if needed
